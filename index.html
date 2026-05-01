@@ -8,7 +8,7 @@
     <style>
         :root { --bg: #2c3e50; --card: #34495e; --text: #ecf0f1; --accent: #3498db; --input: #22313f; }
         body { font-family: -apple-system, "Noto Sans TC", sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 10px; }
-        .container { max-width: 480px; background: var(--card); padding: 20px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.4); margin: auto; min-height: 90vh; }
+        .container { max-width: 480px; background: var(--card); padding: 20px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.4); margin: auto; min-height: 95vh; }
         #auth-screen { text-align: center; padding: 60px 20px; }
         #home-menu { display: none; }
         .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
@@ -67,9 +67,15 @@
         <select id="kelvin">
             <option>10000K</option><option>9000K</option><option selected>6500K</option>
             <option>4500K</option><option>4000K</option><option>3000K</option>
+            <option value="不需要">不需要</option>
         </select>
         <label>🖼️ 燈布材質</label><select id="fabric"></select>
         <label>🪵 背板材質</label><select id="backboard"></select>
+        <label>🛠️ 組裝費</label>
+        <select id="assemble_opt">
+            <option value="yes">需要組裝 (1才$25，低標$1000)</option>
+            <option value="no">不需要組裝 ($0)</option>
+        </select>
         <button onclick="calculateKabudengxiang()">🚀 產生詳細報價</button>
         <div id="quote-result">
             <div id="res_details"></div>
@@ -95,9 +101,15 @@
         <select id="labu_kelvin">
             <option>10000K</option><option>9000K</option><option selected>6500K</option>
             <option>4500K</option><option>4000K</option><option>3000K</option>
+            <option value="不需要">不需要</option>
         </select>
         <label>🖼️ 燈布材質</label><select id="labu_fabric"></select>
         <label>🪵 背板材質</label><select id="labu_backboard"></select>
+        <label>🛠️ 組裝費</label>
+        <select id="labu_assemble_opt">
+            <option value="yes">需要組裝 (1才$25，低標$1000)</option>
+            <option value="no">不需要組裝 ($0)</option>
+        </select>
         <button onclick="calculateLabudengxiang()">🚀 產生詳細報價</button>
         <div id="labu_result">
             <div id="labu_details"></div>
@@ -123,79 +135,95 @@ function goHome() { document.querySelectorAll('.page').forEach(p=>p.style.displa
 window.onload = function() { initKabudengxiang(); initLabudengxiang(); };
 
 function initKabudengxiang() {
-    document.getElementById('frame').innerHTML = `<option value="4" data-price="4">4cm</option><option value="6" data-price="4.5">6cm</option><option value="6.5" data-price="4.5">6.5cm</option><option value="7.8" data-price="4.5">7.8cm</option><option value="8" data-price="5">8cm</option><option value="8_special" data-price="5">1.5特價款 8cm</option><option value="10" data-price="5.5">10cm</option><option value="12" data-price="6">12cm</option>`;
-    document.getElementById('fabric').innerHTML = `<option value="50">軟膜燈布</option><option value="70">UV燈布(台)</option><option value="55">杜邦紙</option><option value="60">云絲軟膜</option><option value="80">A級防火布</option>`;
-    document.getElementById('backboard').innerHTML = `<option value="50">塑鋁板</option><option value="40">發泡板</option>`;
+    document.getElementById('frame').innerHTML = `<option value="4" data-price="4">4cm</option><option value="6" data-price="4.5">6cm</option><option value="6.5" data-price="4.5">6.5cm</option><option value="7.8" data-price="4.5">7.8cm</option><option value="8" data-price="5">8cm</option><option value="8_special" data-price="5">1.5特價款 8cm</option><option value="10" data-price="5.5">10cm</option><option value="12" data-price="6">12cm</option><option value="0" data-price="0">不需要鋁框 (0元)</option>`;
+    document.getElementById('fabric').innerHTML = `<option value="50">軟膜燈布</option><option value="70">UV燈布(台)</option><option value="55">杜邦紙</option><option value="60">云絲軟膜</option><option value="80">A級防火布</option><option value="0">不需要燈布 (0元)</option>`;
+    document.getElementById('backboard').innerHTML = `<option value="50">塑鋁板</option><option value="40">發泡板</option><option value="0">不需要背板 (0元)</option>`;
     updateLightOptions();
 }
 
 function initLabudengxiang() {
-    document.getElementById('labu_frame').innerHTML = `<option value="8" data-price="5.5">側開蓋-8cm</option><option value="12" data-price="12">側開蓋-12cm</option><option value="6" data-price="9.5">正開蓋-5cm</option><option value="8_face" data-price="10.5">正開蓋-6.5cm</option><option value="10" data-price="11">正開蓋-側10面</option><option value="12_face" data-price="12.5">正開蓋-側12面</option><option value="15" data-price="13">正開蓋-側15面</option>`;
-    document.getElementById('labu_fabric').innerHTML = `<option value="65">刀刮布</option><option value="55">UV無接縫-台製</option>`;
-    document.getElementById('labu_backboard').innerHTML = `<option value="50">塑鋁板</option><option value="40">發泡板</option>`;
+    document.getElementById('labu_frame').innerHTML = `<option value="8" data-price="5.5">側開蓋-8cm</option><option value="12" data-price="12">側開蓋-12cm</option><option value="6" data-price="9.5">正開蓋-5cm</option><option value="8_face" data-price="10.5">正開蓋-6.5cm</option><option value="10" data-price="11">正開蓋-側10面</option><option value="12_face" data-price="12.5">正開蓋-側12面</option><option value="15" data-price="13">正開蓋-側15面</option><option value="0" data-price="0">不需要鋁框 (0元)</option>`;
+    document.getElementById('labu_fabric').innerHTML = `<option value="65">刀刮布</option><option value="55">UV無接縫-台製</option><option value="0">不需要燈布 (0元)</option>`;
+    document.getElementById('labu_backboard').innerHTML = `<option value="50">塑鋁板</option><option value="40">發泡板</option><option value="0">不需要背板 (0元)</option>`;
     updateLabuLights();
 }
 
 function updateLightOptions() {
-    const f = document.getElementById('frame').value; const p = KABU_LIGHTS[f];
-    document.getElementById('light').innerHTML = `<option value="${p.tw_wp}">防水-台灣晶元</option><option value="${p.sa_wp}">防水-三安</option><option value="${p.tw_in}">室內-台灣晶元</option><option value="${p.sa_in}">室內-三安</option><option value="${p.sa_sp}">室內-三安特價</option>`;
+    const f = document.getElementById('frame').value; 
+    if(f === "0") { document.getElementById('light').innerHTML = `<option value="0">不需要燈條 (0元)</option>`; return; }
+    const p = KABU_LIGHTS[f];
+    document.getElementById('light').innerHTML = `<option value="${p.tw_wp}">防水-台灣晶元</option><option value="${p.sa_wp}">防水-三安</option><option value="${p.tw_in}">室內-台灣晶元</option><option value="${p.sa_in}">室內-三安</option><option value="${p.sa_sp}">室內-三安特價</option><option value="0">不需要燈條 (0元)</option>`;
 }
 
 function updateLabuLights() {
-    const f = document.getElementById('labu_frame').value; const p = LABU_LIGHTS[f];
-    document.getElementById('labu_light').innerHTML = `<option value="${p.tw_wp}">防水-台灣晶元</option><option value="${p.sa_wp}">防水-三安</option><option value="${p.tw_in}">室內-台灣晶元</option><option value="${p.sa_in}">室內-三安</option><option value="${p.sa_sp}">室內-三安特價</option>`;
+    const f = document.getElementById('labu_frame').value;
+    if(f === "0") { document.getElementById('labu_light').innerHTML = `<option value="0">不需要燈條 (0元)</option>`; return; }
+    const p = LABU_LIGHTS[f];
+    document.getElementById('labu_light').innerHTML = `<option value="${p.tw_wp}">防水-台灣晶元</option><option value="${p.sa_wp}">防水-三安</option><option value="${p.tw_in}">室內-台灣晶元</option><option value="${p.sa_in}">室內-三安</option><option value="${p.sa_sp}">室內-三安特價</option><option value="0">不需要燈條 (0元)</option>`;
 }
 
 function calculateKabudengxiang() {
     const w = parseFloat(document.getElementById('w').value)||0, h = parseFloat(document.getElementById('h').value)||0;
     if(w<=0||h<=0) return;
-    const size = (w*h)/900, perimeter = (w+h)*2, assemble = size < 40 ? 1000 : Math.round(size*25);
-    const fO = document.getElementById('frame').selectedOptions[0], lO = document.getElementById('light').selectedOptions[0], faO = document.getElementById('fabric').selectedOptions[0], bO = document.getElementById('backboard').selectedOptions[0], kO = document.getElementById('kelvin').value;
-    const fP = Math.round(perimeter*parseFloat(fO.getAttribute('data-price'))), lP = Math.round(size*parseFloat(lO.value)), faP = Math.round(size*parseFloat(faO.value)), bP = Math.round(size*parseFloat(bO.value));
+    const size = (w*h)/900, perimeter = (w+h)*2;
+    const fO = document.getElementById('frame').selectedOptions[0], lO = document.getElementById('light').selectedOptions[0], faO = document.getElementById('fabric').selectedOptions[0], bO = document.getElementById('backboard').selectedOptions[0], kO = document.getElementById('kelvin').value, aO = document.getElementById('assemble_opt').value;
+    
+    let assemble = 0;
+    if(aO === "yes") { assemble = size < 40 ? 1000 : Math.round(size*25); }
+
+    const fP = Math.round(perimeter * parseFloat(fO.getAttribute('data-price')));
+    const lP = Math.round(size * parseFloat(lO.value));
+    const faP = Math.round(size * parseFloat(faO.value));
+    const bP = Math.round(size * parseFloat(bO.value));
     const total = fP+lP+faP+bP+assemble;
 
     document.getElementById('res_details').innerHTML = `
         <div class="price-item"><span class="price-label">規格尺寸</span><div class="price-content"><span>${w}x${h}cm (${size.toFixed(2)}才)</span></div></div>
-        <div class="price-item"><span class="price-label">鋁框：${fO.text}</span><div class="price-content"><span>$${fP.toLocaleString()}</span></div></div>
-        <div class="price-item"><span class="price-label">燈條：${lO.text}</span><div class="price-content"><span>$${lP.toLocaleString()}</span></div></div>
+        <div class="price-item"><span class="price-label">鋁框：${fO.value==="0"?"不需要":fO.text}</span><div class="price-content"><span>$${fP.toLocaleString()}</span></div></div>
+        <div class="price-item"><span class="price-label">燈條：${lO.value==="0"?"不需要":lO.text}</span><div class="price-content"><span>$${lP.toLocaleString()}</span></div></div>
         <div class="price-item" style="background:#e8f0fe; padding: 5px; border-radius: 4px; border: 1px solid #1a73e8; margin-top:5px;"><span class="price-label" style="color:#1a73e8;">💡 色溫需求</span><div class="price-content"><span style="color:#1a73e8; font-weight:bold;">${kO}</span></div></div>
-        <div class="price-item"><span class="price-label">燈布：${faO.text}</span><div class="price-content"><span>$${faP.toLocaleString()}</span></div></div>
-        <div class="price-item"><span class="price-label">背板：${bO.text}</span><div class="price-content"><span>$${bP.toLocaleString()}</span></div></div>
-        <div class="price-item"><span class="price-label">組裝費用</span><div class="price-content"><span>$${assemble.toLocaleString()}</span></div></div>`;
+        <div class="price-item"><span class="price-label">燈布：${faO.value==="0"?"不需要":faO.text}</span><div class="price-content"><span>$${faP.toLocaleString()}</span></div></div>
+        <div class="price-item"><span class="price-label">背板：${bO.value==="0"?"不需要":bO.text}</span><div class="price-content"><span>$${bP.toLocaleString()}</span></div></div>
+        <div class="price-item"><span class="price-label">組裝費用</span><div class="price-content"><span>${aO==="no"?"不需要":"$"+assemble.toLocaleString()}</span></div></div>`;
     
     document.getElementById('res_total').innerText = "總計：$ " + total.toLocaleString();
     document.getElementById('quote-result').style.display = 'block'; 
     document.getElementById('kabudengxiang_btns').style.display = 'flex';
-    document.getElementById('line_btn').onclick = () => sendLine(`【極亮卡布報價】\n尺寸：${w}x${h}cm\n框：${fO.text}\n燈條：${lO.text}\n色溫：${kO}\n燈布：${faO.text}\n總計：$${total.toLocaleString()}`);
 }
 
 function calculateLabudengxiang() {
     const w = parseFloat(document.getElementById('labu_w').value)||0, h = parseFloat(document.getElementById('labu_h').value)||0;
     if(w<=0||h<=0) return;
-    const size = (w*h)/900, perimeter = (w+h)*2, assemble = size < 40 ? 1000 : Math.round(size*25);
-    const fO = document.getElementById('labu_frame').selectedOptions[0], lO = document.getElementById('labu_light').selectedOptions[0], faO = document.getElementById('labu_fabric').selectedOptions[0], bO = document.getElementById('labu_backboard').selectedOptions[0], kO = document.getElementById('labu_kelvin').value;
-    const fP = Math.round(perimeter*parseFloat(fO.getAttribute('data-price'))), lP = Math.round(size*parseFloat(lO.value)), faP = Math.round(size*parseFloat(faO.value)), bP = Math.round(size*parseFloat(bO.value));
+    const size = (w*h)/900, perimeter = (w+h)*2;
+    const fO = document.getElementById('labu_frame').selectedOptions[0], lO = document.getElementById('labu_light').selectedOptions[0], faO = document.getElementById('labu_fabric').selectedOptions[0], bO = document.getElementById('labu_backboard').selectedOptions[0], kO = document.getElementById('labu_kelvin').value, aO = document.getElementById('labu_assemble_opt').value;
+
+    let assemble = 0;
+    if(aO === "yes") { assemble = size < 40 ? 1000 : Math.round(size*25); }
+
+    const fP = Math.round(perimeter * parseFloat(fO.getAttribute('data-price')));
+    const lP = Math.round(size * parseFloat(lO.value));
+    const faP = Math.round(size * parseFloat(faO.value));
+    const bP = Math.round(size * parseFloat(bO.value));
     const total = fP+lP+faP+bP+assemble;
 
     document.getElementById('labu_details').innerHTML = `
         <div class="price-item"><span class="price-label">規格尺寸</span><div class="price-content"><span>${w}x${h}cm (${size.toFixed(2)}才)</span></div></div>
-        <div class="price-item"><span class="price-label">鋁框：${fO.text}</span><div class="price-content"><span>$${fP.toLocaleString()}</span></div></div>
-        <div class="price-item"><span class="price-label">燈條：${lO.text}</span><div class="price-content"><span>$${lP.toLocaleString()}</span></div></div>
+        <div class="price-item"><span class="price-label">鋁框：${fO.value==="0"?"不需要":fO.text}</span><div class="price-content"><span>$${fP.toLocaleString()}</span></div></div>
+        <div class="price-item"><span class="price-label">燈條：${lO.value==="0"?"不需要":lO.text}</span><div class="price-content"><span>$${lP.toLocaleString()}</span></div></div>
         <div class="price-item" style="background:#e8f0fe; padding: 5px; border-radius: 4px; border: 1px solid #1a73e8; margin-top:5px;"><span class="price-label" style="color:#1a73e8;">💡 色溫需求</span><div class="price-content"><span style="color:#1a73e8; font-weight:bold;">${kO}</span></div></div>
-        <div class="price-item"><span class="price-label">燈布：${faO.text}</span><div class="price-content"><span>$${faP.toLocaleString()}</span></div></div>
-        <div class="price-item"><span class="price-label">背板：${bO.text}</span><div class="price-content"><span>$${bP.toLocaleString()}</span></div></div>
-        <div class="price-item"><span class="price-label">組裝費用</span><div class="price-content"><span>$${assemble.toLocaleString()}</span></div></div>`;
+        <div class="price-item"><span class="price-label">燈布：${faO.value==="0"?"不需要":faO.text}</span><div class="price-content"><span>$${faP.toLocaleString()}</span></div></div>
+        <div class="price-item"><span class="price-label">背板：${bO.value==="0"?"不需要":bO.text}</span><div class="price-content"><span>$${bP.toLocaleString()}</span></div></div>
+        <div class="price-item"><span class="price-label">組裝費用</span><div class="price-content"><span>${aO==="no"?"不需要":"$"+assemble.toLocaleString()}</span></div></div>`;
     
     document.getElementById('labu_total').innerText = "總計：$ " + total.toLocaleString();
     document.getElementById('labu_result').style.display = 'block'; 
     document.getElementById('labudengxiang_btns').style.display = 'flex';
-    document.getElementById('labu_line_btn').onclick = () => sendLine(`【極亮拉布報價】\n尺寸：${w}x${h}cm\n框：${fO.text}\n燈條：${lO.text}\n色溫：${kO}\n燈布：${faO.text}\n總計：$${total.toLocaleString()}`);
 }
 
 function sendLine(msg) { window.open("https://line.me/R/msg/text/?" + encodeURIComponent(msg)); }
 function takeSnap(id) { 
     const element = document.getElementById(id);
-    html2canvas(element, {backgroundColor:'#34495e', scale:2, logging: true, useCORS: true}).then(canvas => {
+    html2canvas(element, {backgroundColor:'#34495e', scale:2}).then(canvas => {
         const l = document.createElement('a');
         l.download = '報價單.png';
         l.href = canvas.toDataURL('image/png');
