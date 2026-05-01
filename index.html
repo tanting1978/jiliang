@@ -8,31 +8,23 @@
     <style>
         :root { --bg: #2c3e50; --card: #34495e; --text: #ecf0f1; --accent: #3498db; --input: #22313f; }
         body { font-family: -apple-system, "Noto Sans TC", sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 10px; }
-        .container { max-width: 480px; background: var(--card); padding: 20px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.4); margin: auto; min-height: 80vh; position: relative; }
-        
-        /* 驗證畫面 */
+        .container { max-width: 480px; background: var(--card); padding: 20px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.4); margin: auto; min-height: 90vh; }
         #auth-screen { text-align: center; padding: 60px 20px; }
-        /* 首頁選單 */
         #home-menu { display: none; }
         .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
         .menu-btn { background: var(--input); border: 2px solid var(--accent); padding: 20px 10px; border-radius: 12px; text-align: center; cursor: pointer; transition: 0.3s; font-weight: bold; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 80px; }
         .menu-btn:hover { background: var(--accent); transform: translateY(-3px); }
         .menu-btn span { font-size: 0.9em; margin-top: 8px; }
-
-        /* 各報價頁面控制 */
         .page { display: none; }
-        .back-btn { background: none; border: 1px solid var(--text); color: var(--text); padding: 5px 15px; border-radius: 20px; font-size: 0.8em; margin-bottom: 20px; cursor: pointer; display: inline-block; }
-
-        /* 輸入與排版 */
+        .back-btn { background: none; border: 1px solid var(--text); color: var(--text); padding: 5px 15px; border-radius: 20px; font-size: 0.8em; margin-bottom: 20px; cursor: pointer; }
         input, select { width: 100%; padding: 12px; border: 1.5px solid #7f8c8d; border-radius: 8px; box-sizing: border-box; font-size: 16px; background: var(--input); color: var(--text); margin-bottom: 12px; }
         button { width: 100%; padding: 14px; border: none; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; color: white; background: var(--accent); }
-        
-        /* 報價明細樣式 */
-        #quote-result { margin-top: 20px; padding: 20px; background: var(--input); border: 2px solid var(--accent); border-radius: 10px; display: none; }
-        .price-item { display: flex; justify-content: space-between; margin-bottom: 8px; border-bottom: 1px solid #444; padding-bottom: 4px; font-size: 0.9em; }
-        .total-price { font-size: 2em; color: #e74c3c; font-weight: bold; text-align: center; margin: 15px 0; border-top: 1px dashed #7f8c8d; padding-top: 10px; }
-        .company-info { margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 8px; font-size: 0.8em; border-left: 5px solid var(--accent); }
-        
+        #quote-result, #labu_result { margin-top: 20px; padding: 20px; background: var(--input); border: 2px solid var(--accent); border-radius: 10px; display: none; }
+        .price-item { display: flex; flex-direction: column; margin-bottom: 10px; border-bottom: 1px solid #444; padding-bottom: 5px; }
+        .price-label { font-size: 0.85em; color: var(--accent); font-weight: bold; }
+        .price-content { display: flex; justify-content: space-between; font-size: 1em; margin-top: 3px; }
+        .total-price { font-size: 2.2em; color: #e74c3c; font-weight: bold; text-align: center; margin: 20px 0; border-top: 1px dashed #7f8c8d; padding-top: 15px; }
+        .company-info { margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 8px; font-size: 0.85em; border-left: 5px solid var(--accent); line-height: 1.7; }
         .footer-link { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #555; }
         .footer-link a { color: var(--accent); text-decoration: none; font-weight: bold; }
     </style>
@@ -40,115 +32,158 @@
 <body>
 
 <div class="container">
-    <!-- 1. 登入驗證 -->
     <div id="auth-screen">
         <div style="font-size: 50px;">🔒</div>
         <h3>極亮廣告同行系統</h3>
-        <input type="password" id="passkey" placeholder="請輸入公司電話" style="text-align: center;">
+        <input type="password" id="passkey" placeholder="輸入公司電話驗證" style="text-align: center;">
         <button onclick="checkAuth()">進入系統</button>
-        <p id="auth-msg" style="color:#e74c3c; margin-top:10px;"></p>
     </div>
 
-    <!-- 2. 首頁八大選單 -->
     <div id="home-menu">
-        <div style="text-align: center; margin-bottom: 20px;">
-            <img src="logo.png" style="max-width:120px;" onerror="this.style.display='none';">
-            <h2 style="margin: 5px 0; color:var(--accent);">報價類別選擇</h2>
-        </div>
+        <h2 style="text-align: center; color:var(--accent);">報價類別選擇</h2>
         <div class="menu-grid">
             <div class="menu-btn" onclick="showPage('kabudengxiang')">🖼️ <span>卡布燈箱</span></div>
-            <div class="menu-btn" onclick="alert('頁面開發中，敬請期待！')">🏞️ <span>拉布燈箱-戶外</span></div>
-            <div class="menu-btn" onclick="alert('頁面開發中，敬請期待！')">📦 <span>雙面卡布燈箱</span></div>
-            <div class="menu-btn" onclick="alert('頁面開發中，敬請期待！')">🏛️ <span>包柱卡布燈箱</span></div>
-            <div class="menu-btn" onclick="alert('頁面開發中，敬請期待！')">✨ <span>發光/金屬字</span></div>
-            <div class="menu-btn" onclick="alert('頁面開發中，敬請期待！')">📐 <span>單型材系列</span></div>
-            <div class="menu-btn" onclick="alert('頁面開發中，敬請期待！')">🎗️ <span>燈帶/燈條系列</span></div>
-            <div class="menu-btn" onclick="alert('頁面開發中，敬請期待！')">🔩 <span>材料系列</span></div>
+            <div class="menu-btn" onclick="showPage('labudengxiang')">🏞️ <span>拉布燈箱-戶外</span></div>
+            <div class="menu-btn" onclick="alert('模組開發中')">📦 <span>雙面卡布燈箱</span></div>
+            <div class="menu-btn" onclick="alert('模組開發中')">🏛️ <span>包柱卡布燈箱</span></div>
+            <div class="menu-btn" onclick="alert('模組開發中')">✨ <span>發光/金屬字</span></div>
+            <div class="menu-btn" onclick="alert('模組開發中')">📐 <span>單型材系列</span></div>
+            <div class="menu-btn" onclick="alert('模組開發中')">🎗️ <span>燈帶/燈條系列</span></div>
+            <div class="menu-btn" onclick="alert('模組開發中')">🔩 <span>材料系列</span></div>
         </div>
-        <div class="footer-link">
-            更多產品介紹請點擊：<br>
-            <a href="https://jiliangkabudengxiang.webnode.page/" target="_blank">👉 極亮網站 👈</a>
+        <div class="footer-link"><a href="https://jiliangkabudengxiang.webnode.page/" target="_blank">👉 前往官網 👈</a></div>
+    </div>
+
+    <!-- 卡布燈箱頁面 -->
+    <div id="kabudengxiang" class="page">
+        <div class="back-btn" onclick="goHome()">⬅ 回首頁</div>
+        <h3 style="color:var(--accent);">卡布燈箱報價</h3>
+        <label>📏 尺寸 (cm)</label>
+        <div style="display:flex; gap:10px;"><input type="number" id="w" placeholder="寬"><input type="number" id="h" placeholder="高"></div>
+        <label>🖼️ 框厚度</label>
+        <select id="frame" onchange="updateLightOptions()"></select>
+        <label>💡 燈條規格</label><select id="light"></select>
+        <label>🎨 色溫需求 (不計價)</label>
+        <select id="kelvin">
+            <option>10000K</option><option>9000K</option><option selected>6500K</option>
+            <option>4500K</option><option>4000K</option><option>3000K</option>
+        </select>
+        <label>🖼️ 燈布材質</label>
+        <select id="fabric"></select>
+        <label>🪵 背板材質</label>
+        <select id="backboard"></select>
+        <button onclick="calculateKabudengxiang()">🚀 產生報價單</button>
+        <div id="quote-result">
+            <div id="res_details"></div>
+            <div class="total-price" id="res_total"></div>
+            <div class="company-info"><b>極亮廣告燈箱</b><br>業務：趙恆毅 0921-159127</div>
+        </div>
+        <div id="kabudengxiang_btns" style="display:none; flex-direction:column; gap:10px; margin-top:15px;">
+            <button onclick="takeSnap('quote-result')" style="background:#7f8c8d;">📸 產生報價截圖</button>
+            <button id="line_btn" style="background:#00c300;">💬 傳送報價 LINE</button>
         </div>
     </div>
 
-    <!-- 3. 卡布燈箱報價頁 -->
-    <div id="kabudengxiang" class="page">
+    <!-- 拉布燈箱頁面 -->
+    <div id="labudengxiang" class="page">
         <div class="back-btn" onclick="goHome()">⬅ 回首頁</div>
-        <h3 style="margin-top:0;">卡布燈箱報價計算</h3>
-        <label>尺寸 (cm)</label>
-        <div style="display:flex; gap:10px;"><input type="number" id="w" placeholder="寬"><input type="number" id="h" placeholder="高"></div>
-        <label>框厚度</label>
-        <select id="frame" onchange="updateLightOptions()">
-            <option value="4" data-price="4">4cm</option>
-            <option value="6" data-price="4.5">6cm</option>
-            <option value="6.5" data-price="4.5">6.5cm</option>
-            <option value="7.8" data-price="4.5">7.8cm</option>
-            <option value="8" data-price="5">8cm</option>
-            <option value="8_special" data-price="5">1.5特價 8cm</option>
-            <option value="10" data-price="5.5">10cm</option>
-            <option value="12" data-price="6">12cm</option>
+        <h3 style="color:var(--accent);">拉布燈箱報價</h3>
+        <label>📏 尺寸 (cm)</label>
+        <div style="display:flex; gap:10px;"><input type="number" id="labu_w" placeholder="寬"><input type="number" id="labu_h" placeholder="高"></div>
+        <label>🖼️ 鋁型材-框規格</label>
+        <select id="labu_frame" onchange="updateLabuLights()"></select>
+        <label>💡 燈條規格</label><select id="labu_light"></select>
+        <label>🎨 色溫需求 (不計價)</label>
+        <select id="labu_kelvin">
+            <option>10000K</option><option>9000K</option><option selected>6500K</option>
+            <option>4500K</option><option>4000K</option><option>3000K</option>
         </select>
-        <label>燈條</label><select id="light"></select>
-        <label>燈布</label>
-        <select id="fabric"><option value="50">軟膜燈布</option><option value="70">UV燈布(台)</option><option value="55">杜邦紙</option><option value="60">云絲軟膜</option><option value="80">A級防火布</option></select>
-        <label>背板</label>
-        <select id="backboard"><option value="50">塑鋁板</option><option value="40">發泡板</option></select>
-        <button onclick="calculate()">🚀 計算報價</button>
-
-        <div id="screenshot-area">
-            <div id="quote-result">
-                <div style="text-align:center; font-weight:bold; color:var(--accent); margin-bottom:15px;">卡布燈箱報價單</div>
-                <div id="res_details"></div>
-                <div class="total-price" id="res_total">$ 0</div>
-                <div class="company-info"><b>極亮廣告燈箱</b><br>電話：04-22370107<br>業務：趙恆毅 0921-159127</div>
-            </div>
+        <label>🖼️ 燈布材質</label>
+        <select id="labu_fabric"></select>
+        <label>🪵 背板材質</label>
+        <select id="labu_backboard"></select>
+        <button onclick="calculateLabudengxiang()">🚀 產生報價單</button>
+        <div id="labu_result">
+            <div id="labu_details"></div>
+            <div class="total-price" id="labu_total"></div>
+            <div class="company-info"><b>極亮廣告燈箱</b><br>業務：趙恆毅 0921-159127</div>
         </div>
-        <div id="action-btns" style="display:none; flex-direction:column; gap:10px; margin-top:15px;">
-            <button onclick="takeScreenshot()" style="background:#7f8c8d;">📸 產生報價截圖</button>
-            <button onclick="sendLine()" style="background:#00c300;">💬 傳送 LINE</button>
+        <div id="labudengxiang_btns" style="display:none; flex-direction:column; gap:10px; margin-top:15px;">
+            <button onclick="takeSnap('labu_result')" style="background:#7f8c8d;">📸 產生報價截圖</button>
+            <button id="labu_line_btn" style="background:#00c300;">💬 傳送報價 LINE</button>
         </div>
     </div>
 </div>
 
 <script>
-const CORRECT_PASSKEY = "22370107";
-function checkAuth() {
-    if(document.getElementById('passkey').value === CORRECT_PASSKEY) {
-        document.getElementById('auth-screen').style.display = 'none';
-        document.getElementById('home-menu').style.display = 'block';
-    } else { document.getElementById('auth-msg').innerText = "錯誤！"; }
+const PASSKEY = "22370107";
+const KABU_LIGHTS = {"4":{tw_wp:360,sa_wp:240,tw_in:216,sa_in:144,sa_sp:108},"6":{tw_wp:225,sa_wp:150,tw_in:135,sa_in:90,sa_sp:67.5},"6.5":{tw_wp:225,sa_wp:150,tw_in:135,sa_in:90,sa_sp:67.5},"7.8":{tw_wp:180,sa_wp:120,tw_in:108,sa_in:72,sa_sp:54},"8":{tw_wp:180,sa_wp:120,tw_in:108,sa_in:72,sa_sp:54},"8_special":{tw_wp:180,sa_wp:120,tw_in:108,sa_in:72,sa_sp:54},"10":{tw_wp:150,sa_wp:100,tw_in:90,sa_in:60,sa_sp:45},"12":{tw_wp:120,sa_wp:80,tw_in:72,sa_in:48,sa_sp:36}};
+const LABU_LIGHTS = {"6":{tw_wp:225,sa_wp:150,tw_in:135,sa_in:90,sa_sp:67.5},"8":{tw_wp:180,sa_wp:120,tw_in:108,sa_in:72,sa_sp:54},"8_face":{tw_wp:180,sa_wp:120,tw_in:108,sa_in:72,sa_sp:54},"10":{tw_wp:150,sa_wp:100,tw_in:90,sa_in:60,sa_sp:45},"12":{tw_wp:120,sa_wp:80,tw_in:72,sa_in:48,sa_sp:36},"12_face":{tw_wp:150,sa_wp:100,tw_in:90,sa_in:60,sa_sp:45},"15":{tw_wp:95,sa_wp:65,tw_in:60,sa_in:40,sa_sp:30}};
+
+function checkAuth() { if(document.getElementById('passkey').value === PASSKEY){document.getElementById('auth-screen').style.display='none';document.getElementById('home-menu').style.display='block';} }
+function showPage(id) { document.getElementById('home-menu').style.display='none'; document.getElementById(id).style.display='block'; }
+function goHome() { document.querySelectorAll('.page').forEach(p=>p.style.display='none'); document.getElementById('home-menu').style.display='block'; }
+
+// 初始化選單
+window.onload = function() {
+    initKabudengxiang();
+    initLabudengxiang();
+};
+
+function initKabudengxiang() {
+    document.getElementById('frame').innerHTML = `<option value="4" data-price="4">4cm (4元/cm)</option><option value="6" data-price="4.5">6cm (4.5元/cm)</option><option value="6.5" data-price="4.5">6.5cm (4.5元/cm)</option><option value="7.8" data-price="4.5">7.8cm (4.5元/cm)</option><option value="8" data-price="5">8cm (5元/cm)</option><option value="8_special" data-price="5">1.5特價款 8cm (5元/cm)</option><option value="10" data-price="5.5">10cm (5.5元/cm)</option><option value="12" data-price="6">12cm (6元/cm)</option>`;
+    document.getElementById('fabric').innerHTML = `<option value="50">軟膜燈布</option><option value="70">UV燈布(台)</option><option value="55">杜邦紙</option><option value="60">云絲軟膜</option><option value="80">A級防火布</option>`;
+    document.getElementById('backboard').innerHTML = `<option value="50">塑鋁板</option><option value="40">發泡板</option>`;
+    updateLightOptions();
 }
 
-function showPage(pageId) {
-    document.getElementById('home-menu').style.display = 'none';
-    document.getElementById(pageId).style.display = 'block';
+function initLabudengxiang() {
+    document.getElementById('labu_frame').innerHTML = `<option value="8" data-price="5.5">側開蓋-8cm (5.5元/cm)</option><option value="12" data-price="12">側開蓋-12cm (12元/cm)</option><option value="6" data-price="9.5">正開蓋-5cm (9.5元/cm)</option><option value="8_face" data-price="10.5">正開蓋-6.5cm (10.5元/cm)</option><option value="10" data-price="11">正開蓋-側10面 (11元/cm)</option><option value="12_face" data-price="12.5">正開蓋-側12面 (12.5元/cm)</option><option value="15" data-price="13">正開蓋-側15面 (13元/cm)</option>`;
+    document.getElementById('labu_fabric').innerHTML = `<option value="65">刀刮布</option><option value="55">UV無接縫-台製</option>`;
+    document.getElementById('labu_backboard').innerHTML = `<option value="50">塑鋁板</option><option value="40">發泡板</option>`;
+    updateLabuLights();
 }
 
-function goHome() {
-    document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
-    document.getElementById('home-menu').style.display = 'block';
-}
-
-// 報價邏輯 (保持不變)
-const lightPrices = { "4":{tw_wp:360,sa_wp:240,tw_in:216,sa_in:144,sa_sp:108},"6":{tw_wp:225,sa_wp:150,tw_in:135,sa_in:90,sa_sp:67.5},"6.5":{tw_wp:225,sa_wp:150,tw_in:135,sa_in:90,sa_sp:67.5},"7.8":{tw_wp:180,sa_wp:120,tw_in:108,sa_in:72,sa_sp:54},"8":{tw_wp:180,sa_wp:120,tw_in:108,sa_in:72,sa_sp:54},"8_special":{tw_wp:180,sa_wp:120,tw_in:108,sa_in:72,sa_sp:54},"10":{tw_wp:150,sa_wp:100,tw_in:90,sa_in:60,sa_sp:45},"12":{tw_wp:120,sa_wp:80,tw_in:72,sa_in:48,sa_sp:36}};
 function updateLightOptions() {
-    const f = document.getElementById('frame').value; const p = lightPrices[f];
-    document.getElementById('light').innerHTML = `<option value="${p.tw_wp}">防水-台灣晶元</option><option value="${p.sa_wp}">防水-三三安</option><option value="${p.tw_in}">室內-台灣晶元</option><option value="${p.sa_in}">室內-三安</option><option value="${p.sa_sp}">室內-三安特價</option>`;
+    const f = document.getElementById('frame').value; const p = KABU_LIGHTS[f];
+    document.getElementById('light').innerHTML = `<option value="${p.tw_wp}">防水-台灣晶元</option><option value="${p.sa_wp}">防水-三安</option><option value="${p.tw_in}">室內-台灣晶元</option><option value="${p.sa_in}">室內-三安</option><option value="${p.sa_sp}">室內-三安特價</option>`;
 }
-function calculate() {
+
+function updateLabuLights() {
+    const f = document.getElementById('labu_frame').value; const p = LABU_LIGHTS[f];
+    document.getElementById('labu_light').innerHTML = `<option value="${p.tw_wp}">防水-台灣晶元</option><option value="${p.sa_wp}">防水-三安</option><option value="${p.tw_in}">室內-台灣晶元</option><option value="${p.sa_in}">室內-三安</option><option value="${p.sa_sp}">室內-三安特價</option>`;
+}
+
+function calculateKabudengxiang() {
     const w = parseFloat(document.getElementById('w').value)||0, h = parseFloat(document.getElementById('h').value)||0;
     if(w<=0||h<=0) return;
-    const size = (w*h)/900; const perimeter = (w+h)*2; const assemble = size < 40 ? 1000 : Math.round(size*25);
-    const fO = document.getElementById('frame').selectedOptions[0], lO = document.getElementById('light').selectedOptions[0], faO = document.getElementById('fabric').selectedOptions[0], bO = document.getElementById('backboard').selectedOptions[0];
+    const size = (w*h)/900, perimeter = (w+h)*2, assemble = size < 40 ? 1000 : Math.round(size*25);
+    const fO = document.getElementById('frame').selectedOptions[0], lO = document.getElementById('light').selectedOptions[0], faO = document.getElementById('fabric').selectedOptions[0], bO = document.getElementById('backboard').selectedOptions[0], kO = document.getElementById('kelvin').value;
     const fP = Math.round(perimeter*parseFloat(fO.getAttribute('data-price'))), lP = Math.round(size*parseFloat(lO.value)), faP = Math.round(size*parseFloat(faO.value)), bP = Math.round(size*parseFloat(bO.value));
     const total = fP+lP+faP+bP+assemble;
-    document.getElementById('res_details').innerHTML = `<div class="price-item"><span>規格：${w}x${h}cm (${size.toFixed(2)}才)</span></div><div class="price-item"><span>鋁框: ${fO.text}</span><span>$${fP.toLocaleString()}</span></div><div class="price-item"><span>燈條: ${lO.text}</span><span>$${lP.toLocaleString()}</span></div><div class="price-item"><span>燈布: ${faO.text}</span><span>$${faP.toLocaleString()}</span></div><div class="price-item"><span>背板: ${bO.text}</span><span>$${bP.toLocaleString()}</span></div><div class="price-item"><span>組裝費用</span><span>$${assemble.toLocaleString()}</span></div>`;
-    document.getElementById('res_total').innerText = "$ " + total.toLocaleString();
-    document.getElementById('quote-result').style.display = 'block'; document.getElementById('action-btns').style.display = 'flex';
+
+    document.getElementById('res_details').innerHTML = `<div class="price-item"><span class="price-label">規格尺寸</span><div class="price-content"><span>${w}x${h}cm (${size.toFixed(2)}才)</span></div></div><div class="price-item"><span class="price-label">框：${fO.text}</span><div class="price-content"><span>$${fP.toLocaleString()}</span></div></div><div class="price-item"><span class="price-label">燈條：${lO.text}</span><div class="price-content"><span>$${lP.toLocaleString()}</span></div></div><div class="price-item" style="background:#e8f0fe; padding: 5px; border-radius: 4px;"><span class="price-label" style="color:#1a73e8;">💡 色溫需求</span><div class="price-content"><span>${kO}</span></div></div><div class="price-item"><span class="price-label">燈布：${faO.text}</span><div class="price-content"><span>$${faP.toLocaleString()}</span></div></div><div class="price-item"><span class="price-label">背板：${bO.text}</span><div class="price-content"><span>$${bP.toLocaleString()}</span></div></div><div class="price-item"><span class="price-label">組裝費用</span><div class="price-content"><span>$${assemble.toLocaleString()}</span></div></div>`;
+    document.getElementById('res_total').innerText = "總計：$ " + total.toLocaleString();
+    document.getElementById('quote-result').style.display = 'block'; document.getElementById('kabudengxiang_btns').style.display = 'flex';
+    document.getElementById('line_btn').onclick = () => sendLine(`【極亮卡布報價】\n尺寸：${w}x${h}cm\n框：${fO.text}\n燈條：${lO.text}\n色溫：${kO}\n燈布：${faO.text}\n總計：$${total.toLocaleString()}`);
 }
-function sendLine() { window.open("https://line.me/R/msg/text/?" + encodeURIComponent("【極亮報價單】\n總額：$"+document.getElementById('res_total').innerText)); }
-function takeScreenshot() { html2canvas(document.getElementById('screenshot-area'),{backgroundColor:'#34495e',scale:2}).then(canvas=>{const l=document.createElement('a');l.download='極亮報價.png';l.href=canvas.toDataURL();l.click();}); }
-updateLightOptions();
+
+function calculateLabudengxiang() {
+    const w = parseFloat(document.getElementById('labu_w').value)||0, h = parseFloat(document.getElementById('labu_h').value)||0;
+    if(w<=0||h<=0) return;
+    const size = (w*h)/900, perimeter = (w+h)*2, assemble = size < 40 ? 1000 : Math.round(size*25);
+    const fO = document.getElementById('labu_frame').selectedOptions[0], lO = document.getElementById('labu_light').selectedOptions[0], faO = document.getElementById('labu_fabric').selectedOptions[0], bO = document.getElementById('labu_backboard').selectedOptions[0], kO = document.getElementById('labu_kelvin').value;
+    const fP = Math.round(perimeter*parseFloat(fO.getAttribute('data-price'))), lP = Math.round(size*parseFloat(lO.value)), faP = Math.round(size*parseFloat(faO.value)), bP = Math.round(size*parseFloat(bO.value));
+    const total = fP+lP+faP+bP+assemble;
+
+    document.getElementById('labu_details').innerHTML = `<div class="price-item"><span class="price-label">規格尺寸</span><div class="price-content"><span>${w}x${h}cm (${size.toFixed(2)}才)</span></div></div><div class="price-item"><span class="price-label">框：${fO.text}</span><div class="price-content"><span>$${fP.toLocaleString()}</span></div></div><div class="price-item"><span class="price-label">燈條：${lO.text}</span><div class="price-content"><span>$${lP.toLocaleString()}</span></div></div><div class="price-item" style="background:#e8f0fe; padding: 5px; border-radius: 4px;"><span class="price-label" style="color:#1a73e8;">💡 色溫需求</span><div class="price-content"><span>${kO}</span></div></div><div class="price-item"><span class="price-label">燈布：${faO.text}</span><div class="price-content"><span>$${faP.toLocaleString()}</span></div></div><div class="price-item"><span class="price-label">背板：${bO.text}</span><div class="price-content"><span>$${bP.toLocaleString()}</span></div></div><div class="price-item"><span class="price-label">組裝費用</span><div class="price-content"><span>$${assemble.toLocaleString()}</span></div></div>`;
+    document.getElementById('labu_total').innerText = "總計：$ " + total.toLocaleString();
+    document.getElementById('labu_result').style.display = 'block'; document.getElementById('labudengxiang_btns').style.display = 'flex';
+    document.getElementById('labu_line_btn').onclick = () => sendLine(`【極亮拉布報價】\n尺寸：${w}x${h}cm\n框：${fO.text}\n燈條：${lO.text}\n色溫：${kO}\n燈布：${faO.text}\n總計：$${total.toLocaleString()}`);
+}
+
+function sendLine(msg) { window.open("https://line.me/R/msg/text/?" + encodeURIComponent(msg)); }
+function takeSnap(id) { html2canvas(document.getElementById(id),{backgroundColor:'#34495e',scale:2}).then(canvas=>{const l=document.createElement('a');l.download='報價單.png';l.href=canvas.toDataURL();l.click();}); }
 </script>
 </body>
 </html>
