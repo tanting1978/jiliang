@@ -3,221 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>極亮廣告燈箱 - 同行報價系統</title>
+    <title>極亮廣告 - 報價管理系統</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
-        :root {
-            --bg-color: #2c3e50;
-            --container-bg: #34495e;
-            --text-main: #ecf0f1;
-            --accent: #3498db;
-            --input-bg: #22313f;
-        }
-
-        body { font-family: -apple-system, "Noto Sans TC", sans-serif; background-color: var(--bg-color); color: var(--text-main); margin: 0; padding: 10px; }
-        .container { max-width: 480px; background: var(--container-bg); padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); margin: auto; }
+        :root { --bg: #2c3e50; --card: #34495e; --text: #ecf0f1; --accent: #3498db; --input: #22313f; }
+        body { font-family: -apple-system, "Noto Sans TC", sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 10px; }
+        .container { max-width: 480px; background: var(--card); padding: 20px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.4); margin: auto; min-height: 80vh; position: relative; }
         
-        #auth-screen { text-align: center; padding: 40px 20px; }
-        #main-content { display: none; }
+        /* 驗證畫面 */
+        #auth-screen { text-align: center; padding: 60px 20px; }
+        /* 首頁選單 */
+        #home-menu { display: none; }
+        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+        .menu-btn { background: var(--input); border: 2px solid var(--accent); padding: 20px 10px; border-radius: 12px; text-align: center; cursor: pointer; transition: 0.3s; font-weight: bold; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 80px; }
+        .menu-btn:hover { background: var(--accent); transform: translateY(-3px); }
+        .menu-btn span { font-size: 0.9em; margin-top: 8px; }
 
-        input, select { 
-            width: 100%; padding: 12px; border: 1.5px solid #7f8c8d; border-radius: 8px; 
-            box-sizing: border-box; font-size: 16px; background-color: var(--input-bg); color: var(--text-main);
-            margin-bottom: 12px;
-        }
+        /* 各報價頁面控制 */
+        .page { display: none; }
+        .back-btn { background: none; border: 1px solid var(--text); color: var(--text); padding: 5px 15px; border-radius: 20px; font-size: 0.8em; margin-bottom: 20px; cursor: pointer; display: inline-block; }
+
+        /* 輸入與排版 */
+        input, select { width: 100%; padding: 12px; border: 1.5px solid #7f8c8d; border-radius: 8px; box-sizing: border-box; font-size: 16px; background: var(--input); color: var(--text); margin-bottom: 12px; }
+        button { width: 100%; padding: 14px; border: none; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; color: white; background: var(--accent); }
         
-        button { 
-            width: 100%; padding: 14px; border: none; border-radius: 8px; font-size: 1em; 
-            font-weight: bold; cursor: pointer; color: white; transition: 0.3s;
-        }
-
-        .logo-area { text-align: center; margin-bottom: 15px; }
-        .logo-area img { max-width: 180px; }
-
-        #screenshot-area { background: var(--container-bg); border-radius: 10px; padding: 5px; }
-        #quote-result { margin-top: 20px; padding: 25px; background: var(--input-bg); border: 2px solid var(--accent); border-radius: 10px; display: none; }
+        /* 報價明細樣式 */
+        #quote-result { margin-top: 20px; padding: 20px; background: var(--input); border: 2px solid var(--accent); border-radius: 10px; display: none; }
+        .price-item { display: flex; justify-content: space-between; margin-bottom: 8px; border-bottom: 1px solid #444; padding-bottom: 4px; font-size: 0.9em; }
+        .total-price { font-size: 2em; color: #e74c3c; font-weight: bold; text-align: center; margin: 15px 0; border-top: 1px dashed #7f8c8d; padding-top: 10px; }
+        .company-info { margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 8px; font-size: 0.8em; border-left: 5px solid var(--accent); }
         
-        .price-item { display: flex; flex-direction: column; margin-bottom: 10px; border-bottom: 1px solid #444; padding-bottom: 5px; }
-        .price-label { font-size: 0.85em; color: var(--accent); font-weight: bold; }
-        .price-content { display: flex; justify-content: space-between; font-size: 1em; margin-top: 3px; }
-        
-        .total-price { font-size: 2.2em; color: #e74c3c; font-weight: bold; text-align: center; margin: 20px 0; border-top: 1px dashed #7f8c8d; padding-top: 15px; }
-        .company-info { margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 8px; font-size: 0.85em; border-left: 5px solid var(--accent); line-height: 1.7; }
-
-        .btn-group { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
+        .footer-link { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #555; }
+        .footer-link a { color: var(--accent); text-decoration: none; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div class="container">
+    <!-- 1. 登入驗證 -->
     <div id="auth-screen">
-        <div style="font-size: 50px; margin-bottom: 10px;">🔒</div>
-        <h3>同行專屬報價系統</h3>
-        <p style="font-size: 0.8em; color: #bdc3c7; margin-bottom: 15px;">請輸入通行暗號進入系統</p>
-        <input type="password" id="passkey" placeholder="輸入暗號" style="text-align: center;">
-        <button onclick="checkAuth()" style="background: var(--accent);">驗證進入</button>
-        <p id="auth-msg" style="color: #e74c3c; margin-top: 10px; font-size: 0.9em;"></p>
+        <div style="font-size: 50px;">🔒</div>
+        <h3>極亮廣告同行系統</h3>
+        <input type="password" id="passkey" placeholder="請輸入公司電話" style="text-align: center;">
+        <button onclick="checkAuth()">進入系統</button>
+        <p id="auth-msg" style="color:#e74c3c; margin-top:10px;"></p>
     </div>
 
-    <div id="main-content">
-        <div class="header" style="text-align:center; margin-bottom: 20px; border-bottom: 1px solid #555; padding-bottom: 10px;">
-            <h2 style="color: var(--accent); margin:0;">極亮燈箱報價</h2>
+    <!-- 2. 首頁八大選單 -->
+    <div id="home-menu">
+        <div style="text-align: center; margin-bottom: 20px;">
+            <img src="logo.png" style="max-width:120px;" onerror="this.style.display='none';">
+            <h2 style="margin: 5px 0; color:var(--accent);">報價類別選擇</h2>
         </div>
-
-        <label>📏 1. 輸入尺寸 (公分)</label>
-        <div style="display: flex; gap: 10px;">
-            <input type="number" id="w" placeholder="寬(cm)">
-            <input type="number" id="h" placeholder="高(cm)">
+        <div class="menu-grid">
+            <div class="menu-btn" onclick="showPage('kabudengxiang')">🖼️ <span>卡布燈箱</span></div>
+            <div class="menu-btn" onclick="alert('頁面開發中，敬請期待！')">🏞️ <span>拉布燈箱-戶外</span></div>
+            <div class="menu-btn" onclick="alert('頁面開發中，敬請期待！')">📦 <span>雙面卡布燈箱</span></div>
+            <div class="menu-btn" onclick="alert('頁面開發中，敬請期待！')">🏛️ <span>包柱卡布燈箱</span></div>
+            <div class="menu-btn" onclick="alert('頁面開發中，敬請期待！')">✨ <span>發光/金屬字</span></div>
+            <div class="menu-btn" onclick="alert('頁面開發中，敬請期待！')">📐 <span>單型材系列</span></div>
+            <div class="menu-btn" onclick="alert('頁面開發中，敬請期待！')">🎗️ <span>燈帶/燈條系列</span></div>
+            <div class="menu-btn" onclick="alert('頁面開發中，敬請期待！')">🔩 <span>材料系列</span></div>
         </div>
+        <div class="footer-link">
+            更多產品介紹請點擊：<br>
+            <a href="https://jiliangkabudengxiang.webnode.page/" target="_blank">👉 極亮網站 👈</a>
+        </div>
+    </div>
 
-        <label>🖼️ 2. 鋁型材-框厚度</label>
+    <!-- 3. 卡布燈箱報價頁 -->
+    <div id="kabudengxiang" class="page">
+        <div class="back-btn" onclick="goHome()">⬅ 回首頁</div>
+        <h3 style="margin-top:0;">卡布燈箱報價計算</h3>
+        <label>尺寸 (cm)</label>
+        <div style="display:flex; gap:10px;"><input type="number" id="w" placeholder="寬"><input type="number" id="h" placeholder="高"></div>
+        <label>框厚度</label>
         <select id="frame" onchange="updateLightOptions()">
-            <option value="4" data-price="4">4cm (4元/cm)</option>
-            <option value="6" data-price="4.5">6cm (4.5元/cm)</option>
-            <option value="6.5" data-price="4.5">6.5cm (4.5元/cm)</option>
-            <option value="7.8" data-price="4.5">7.8cm (4.5元/cm)</option>
-            <option value="8" data-price="5">8cm (5元/cm)</option>
-            <option value="8_special" data-price="5">1.5特價款 8cm (5元/cm)</option>
-            <option value="10" data-price="5.5">10cm (5.5元/cm)</option>
-            <option value="12" data-price="6">12cm (6元/cm)</option>
+            <option value="4" data-price="4">4cm</option>
+            <option value="6" data-price="4.5">6cm</option>
+            <option value="6.5" data-price="4.5">6.5cm</option>
+            <option value="7.8" data-price="4.5">7.8cm</option>
+            <option value="8" data-price="5">8cm</option>
+            <option value="8_special" data-price="5">1.5特價 8cm</option>
+            <option value="10" data-price="5.5">10cm</option>
+            <option value="12" data-price="6">12cm</option>
         </select>
-
-        <label>💡 3. 燈條規格</label>
-        <select id="light"></select>
-
-        <label>🎨 4. 燈布材質</label>
-        <select id="fabric">
-            <option value="50">軟膜燈布</option>
-            <option value="70">UV燈布 (台製)</option>
-            <option value="55">杜邦紙</option>
-            <option value="60">云絲軟軟膜</option>
-            <option value="80">A級防火布</option>
-        </select>
-
-        <label>🪵 5. 背板材質</label>
-        <select id="backboard">
-            <option value="50">塑鋁板</option>
-            <option value="40">發泡板</option>
-        </select>
-
-        <button onclick="calculate()" style="background: var(--accent); margin-top: 10px;">🚀 產生詳細報價單</button>
+        <label>燈條</label><select id="light"></select>
+        <label>燈布</label>
+        <select id="fabric"><option value="50">軟膜燈布</option><option value="70">UV燈布(台)</option><option value="55">杜邦紙</option><option value="60">云絲軟膜</option><option value="80">A級防火布</option></select>
+        <label>背板</label>
+        <select id="backboard"><option value="50">塑鋁板</option><option value="40">發泡板</option></select>
+        <button onclick="calculate()">🚀 計算報價</button>
 
         <div id="screenshot-area">
             <div id="quote-result">
-                <div class="logo-area"><img src="logo.png" onerror="this.style.display='none';"></div>
-                <div style="text-align:center; font-weight:bold; font-size:1.2em; margin-bottom:15px; color:#fff;">卡布燈箱報價明細</div>
+                <div style="text-align:center; font-weight:bold; color:var(--accent); margin-bottom:15px;">卡布燈箱報價單</div>
                 <div id="res_details"></div>
-                <div class="total-price" id="res_total">總計：$ 0</div>
-                <div class="company-info">
-                    <b style="color:var(--accent); font-size:1.1em;">極亮廣告燈箱</b><br>
-                    電話：04-22370107<br>
-                    LINE ID：@jiliang<br>
-                    業務：趙恆毅 0921-159127
-                </div>
-                <div style="font-size:0.7em; color:#888; text-align:center; margin-top:10px;">* 以上報價不含變壓器與運費 *</div>
+                <div class="total-price" id="res_total">$ 0</div>
+                <div class="company-info"><b>極亮廣告燈箱</b><br>電話：04-22370107<br>業務：趙恆毅 0921-159127</div>
             </div>
         </div>
-        
-        <div id="action-btns" class="btn-group" style="display:none;">
+        <div id="action-btns" style="display:none; flex-direction:column; gap:10px; margin-top:15px;">
             <button onclick="takeScreenshot()" style="background:#7f8c8d;">📸 產生報價截圖</button>
-            <button onclick="sendLine()" style="background:#00c300;">💬 傳送報價給同行</button>
-            <button onclick="contactOfficial()" style="background:#00b900;">👤 聯繫官方 LINE (@jiliang)</button>
+            <button onclick="sendLine()" style="background:#00c300;">💬 傳送 LINE</button>
         </div>
     </div>
 </div>
 
 <script>
-// --- 已更新驗證暗號 ---
-const CORRECT_PASSKEY = "22370107"; 
-
+const CORRECT_PASSKEY = "22370107";
 function checkAuth() {
-    if (document.getElementById('passkey').value === CORRECT_PASSKEY) {
+    if(document.getElementById('passkey').value === CORRECT_PASSKEY) {
         document.getElementById('auth-screen').style.display = 'none';
-        document.getElementById('main-content').style.display = 'block';
-    } else {
-        document.getElementById('auth-msg').innerText = "暗號錯誤！請輸入公司電話";
-    }
+        document.getElementById('home-menu').style.display = 'block';
+    } else { document.getElementById('auth-msg').innerText = "錯誤！"; }
 }
 
-const lightPrices = {
-    "4": { "tw_wp": 360, "sa_wp": 240, "tw_in": 216, "sa_in": 144, "sa_sp": 108 },
-    "6": { "tw_wp": 225, "sa_wp": 150, "tw_in": 135, "sa_in": 90, "sa_sp": 67.5 },
-    "6.5": { "tw_wp": 225, "sa_wp": 150, "tw_in": 135, "sa_in": 90, "sa_sp": 67.5 },
-    "7.8": { "tw_wp": 180, "sa_wp": 120, "tw_in": 108, "sa_in": 72, "sa_sp": 54 },
-    "8": { "tw_wp": 180, "sa_wp": 120, "tw_in": 108, "sa_in": 72, "sa_sp": 54 },
-    "8_special": { "tw_wp": 180, "sa_wp": 120, "tw_in": 108, "sa_in": 72, "sa_sp": 54 },
-    "10": { "tw_wp": 150, "sa_wp": 100, "tw_in": 90, "sa_in": 60, "sa_sp": 45 },
-    "12": { "tw_wp": 120, "sa_wp": 80, "tw_in": 72, "sa_in": 48, "sa_sp": 36 }
-};
+function showPage(pageId) {
+    document.getElementById('home-menu').style.display = 'none';
+    document.getElementById(pageId).style.display = 'block';
+}
 
+function goHome() {
+    document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+    document.getElementById('home-menu').style.display = 'block';
+}
+
+// 報價邏輯 (保持不變)
+const lightPrices = { "4":{tw_wp:360,sa_wp:240,tw_in:216,sa_in:144,sa_sp:108},"6":{tw_wp:225,sa_wp:150,tw_in:135,sa_in:90,sa_sp:67.5},"6.5":{tw_wp:225,sa_wp:150,tw_in:135,sa_in:90,sa_sp:67.5},"7.8":{tw_wp:180,sa_wp:120,tw_in:108,sa_in:72,sa_sp:54},"8":{tw_wp:180,sa_wp:120,tw_in:108,sa_in:72,sa_sp:54},"8_special":{tw_wp:180,sa_wp:120,tw_in:108,sa_in:72,sa_sp:54},"10":{tw_wp:150,sa_wp:100,tw_in:90,sa_in:60,sa_sp:45},"12":{tw_wp:120,sa_wp:80,tw_in:72,sa_in:48,sa_sp:36}};
 function updateLightOptions() {
-    const frame = document.getElementById('frame').value;
-    const p = lightPrices[frame];
-    document.getElementById('light').innerHTML = `
-        <option value="${p.tw_wp}">防水-台灣晶元</option>
-        <option value="${p.sa_wp}">防水-三安</option>
-        <option value="${p.tw_in}">室內-台灣晶元</option>
-        <option value="${p.sa_in}">室內-三安</option>
-        <option value="${p.sa_sp}">室內-三安特價</option>
-    `;
+    const f = document.getElementById('frame').value; const p = lightPrices[f];
+    document.getElementById('light').innerHTML = `<option value="${p.tw_wp}">防水-台灣晶元</option><option value="${p.sa_wp}">防水-三三安</option><option value="${p.tw_in}">室內-台灣晶元</option><option value="${p.sa_in}">室內-三安</option><option value="${p.sa_sp}">室內-三安特價</option>`;
 }
-
-let lastMsg = "";
-
 function calculate() {
-    const w = parseFloat(document.getElementById('w').value) || 0;
-    const h = parseFloat(document.getElementById('h').value) || 0;
-    if (w <= 0 || h <= 0) { alert("請輸入尺寸"); return; }
-
-    const size = (w * h) / 900;
-    const perimeter = (w + h) * 2;
-    const assembleCost = size < 40 ? 1000 : Math.round(size * 25);
-    
-    const frameOpt = document.getElementById('frame').selectedOptions[0];
-    const lightOpt = document.getElementById('light').selectedOptions[0];
-    const fabricOpt = document.getElementById('fabric').selectedOptions[0];
-    const backOpt = document.getElementById('backboard').selectedOptions[0];
-
-    const frameP = Math.round(perimeter * parseFloat(frameOpt.getAttribute('data-price')));
-    const lightP = Math.round(size * parseFloat(lightOpt.value));
-    const fabricP = Math.round(size * parseFloat(fabricOpt.value));
-    const backP = Math.round(size * parseFloat(backOpt.value));
-    const total = frameP + lightP + fabricP + backP + assembleCost;
-
-    const resHtml = `
-        <div class="price-item"><span class="price-label">尺寸才數</span><div class="price-content"><span>${w}x${h} cm</span><span>${size.toFixed(2)} 才</span></div></div>
-        <div class="price-item"><span class="price-label">鋁框規格 (${frameOpt.text.split('(')[0]})</span><div class="price-content"><span>$${frameOpt.getAttribute('data-price')}/cm</span><span>$${frameP.toLocaleString()}</span></div></div>
-        <div class="price-item"><span class="price-label">燈條規格 (${lightOpt.text})</span><div class="price-content"><span>計算面積</span><span>$${lightP.toLocaleString()}</span></div></div>
-        <div class="price-item"><span class="price-label">燈布材質 (${fabricOpt.text})</span><div class="price-content"><span>$${fabricOpt.value}/才</span><span>$${fabricP.toLocaleString()}</span></div></div>
-        <div class="price-item"><span class="price-label">背板材質 (${backOpt.text})</span><div class="price-content"><span>$${backOpt.value}/才</span><span>$${backP.toLocaleString()}</span></div></div>
-        <div class="price-item"><span class="price-label">組裝費用</span><div class="price-content"><span>${size < 40 ? '基本費(40才)' : '25/才'}</span><span>$${assembleCost.toLocaleString()}</span></div></div>
-    `;
-    
-    document.getElementById('res_details').innerHTML = resHtml;
-    document.getElementById('res_total').innerText = "總計：$ " + total.toLocaleString();
-    document.getElementById('quote-result').style.display = 'block';
-    document.getElementById('action-btns').style.display = 'flex';
-
-    lastMsg = `【極亮廣告燈箱 同行報價單】\n尺寸：${w}x${h}cm (${size.toFixed(2)}才)\n框：${frameOpt.text}\n燈條：${lightOpt.text}\n燈布：${fabricOpt.text}\n背板：${backOpt.text}\n----------\n總金額：$${total.toLocaleString()}\n(變壓器另計)\n聯繫電話：04-22370107`;
+    const w = parseFloat(document.getElementById('w').value)||0, h = parseFloat(document.getElementById('h').value)||0;
+    if(w<=0||h<=0) return;
+    const size = (w*h)/900; const perimeter = (w+h)*2; const assemble = size < 40 ? 1000 : Math.round(size*25);
+    const fO = document.getElementById('frame').selectedOptions[0], lO = document.getElementById('light').selectedOptions[0], faO = document.getElementById('fabric').selectedOptions[0], bO = document.getElementById('backboard').selectedOptions[0];
+    const fP = Math.round(perimeter*parseFloat(fO.getAttribute('data-price'))), lP = Math.round(size*parseFloat(lO.value)), faP = Math.round(size*parseFloat(faO.value)), bP = Math.round(size*parseFloat(bO.value));
+    const total = fP+lP+faP+bP+assemble;
+    document.getElementById('res_details').innerHTML = `<div class="price-item"><span>規格：${w}x${h}cm (${size.toFixed(2)}才)</span></div><div class="price-item"><span>鋁框: ${fO.text}</span><span>$${fP.toLocaleString()}</span></div><div class="price-item"><span>燈條: ${lO.text}</span><span>$${lP.toLocaleString()}</span></div><div class="price-item"><span>燈布: ${faO.text}</span><span>$${faP.toLocaleString()}</span></div><div class="price-item"><span>背板: ${bO.text}</span><span>$${bP.toLocaleString()}</span></div><div class="price-item"><span>組裝費用</span><span>$${assemble.toLocaleString()}</span></div>`;
+    document.getElementById('res_total').innerText = "$ " + total.toLocaleString();
+    document.getElementById('quote-result').style.display = 'block'; document.getElementById('action-btns').style.display = 'flex';
 }
-
-function sendLine() {
-    window.open("https://line.me/R/msg/text/?" + encodeURIComponent(lastMsg));
-}
-
-function contactOfficial() {
-    window.open("https://line.me/ti/p/@jiliang");
-}
-
-function takeScreenshot() {
-    const area = document.getElementById('screenshot-area');
-    html2canvas(area, { backgroundColor: '#2c3e50', scale: 2 }).then(canvas => {
-        const link = document.createElement('a');
-        link.download = '極亮燈箱報價.png';
-        link.href = canvas.toDataURL();
-        link.click();
-    });
-}
+function sendLine() { window.open("https://line.me/R/msg/text/?" + encodeURIComponent("【極亮報價單】\n總額：$"+document.getElementById('res_total').innerText)); }
+function takeScreenshot() { html2canvas(document.getElementById('screenshot-area'),{backgroundColor:'#34495e',scale:2}).then(canvas=>{const l=document.createElement('a');l.download='極亮報價.png';l.href=canvas.toDataURL();l.click();}); }
 updateLightOptions();
 </script>
 </body>
