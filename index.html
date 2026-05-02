@@ -9,38 +9,28 @@
         :root { --bg: #2c3e50; --card: #34495e; --text: #ecf0f1; --accent: #3498db; --input: #22313f; }
         body { font-family: -apple-system, "Noto Sans TC", "Microsoft JhengHei", sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 10px; font-size: 20px; }
         .container { max-width: 500px; background: var(--card); padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.4); margin: auto; min-height: 95vh; }
-        
         #auth-screen { text-align: center; padding: 60px 20px; }
         #home-menu { display: none; }
-        
         .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 25px; }
         .menu-btn { background: var(--input); border: 2px solid var(--accent); padding: 25px 10px; border-radius: 12px; text-align: center; cursor: pointer; transition: 0.3s; font-weight: bold; font-size: 22px; min-height: 110px; display: flex; align-items: center; justify-content: center; }
         .menu-btn:hover { background: var(--accent); }
-
         .page { display: none; }
         .back-btn { width: 100%; background: #5f6368; color: white; padding: 20px; border-radius: 12px; font-size: 22px; font-weight: bold; text-align: center; margin-bottom: 25px; cursor: pointer; border: none; }
-
         label { display: block; margin-bottom: 12px; font-weight: bold; font-size: 22px; color: var(--accent); }
         input, select { width: 100%; padding: 15px; border: 1.5px solid #7f8c8d; border-radius: 8px; box-sizing: border-box; font-size: 20px; background: var(--input); color: var(--text); margin-bottom: 18px; }
         button { width: 100%; padding: 18px; border: none; border-radius: 8px; font-size: 22px; font-weight: bold; cursor: pointer; color: white; background: var(--accent); }
-        
         .res-box { margin-top: 20px; padding: 25px; background: var(--input); border: 3px solid var(--accent); border-radius: 12px; display: none; }
-        .quote-header { text-align: center; font-size: 26px; font-weight: bold; color: var(--accent); border-bottom: 3px solid var(--accent); margin-bottom: 15px; padding-bottom: 10px; }
+        .quote-header { text-align: center; font-size: 28px; font-weight: bold; color: var(--accent); border-bottom: 3px solid var(--accent); margin-bottom: 15px; padding-bottom: 10px; }
         .price-item { display: flex; flex-direction: column; margin-bottom: 12px; border-bottom: 1px solid #444; padding-bottom: 8px; }
         .price-label { font-size: 18px; color: var(--accent); font-weight: bold; }
         .price-content { display: flex; justify-content: space-between; font-size: 22px; margin-top: 5px; }
         .total-price { font-size: 2.8em; color: #e74c3c; font-weight: bold; text-align: center; margin: 20px 0; border-top: 2px dashed #7f8c8d; padding-top: 15px; }
-        
         table { width: 100%; border-collapse: collapse; margin-bottom: 20px; background: var(--input); font-size: 16px; }
         th, td { border: 1px solid #555; padding: 10px; text-align: center; }
         th { background: var(--accent); color: white; }
-        .tag-kabu { color: #3498db; font-weight: bold; }
-        .tag-labu { color: #e67e22; font-weight: bold; }
-        .tag-double { color: #9b59b6; font-weight: bold; }
-
         .company-footer { margin-top: 30px; padding: 20px; background: rgba(0,0,0,0.3); border-radius: 12px; line-height: 1.6; border: 1px solid #555; }
-        .comp-name { font-size: 26px; font-weight: bold; color: var(--accent); display: block; margin-bottom: 8px; text-align: center; }
-        .comp-detail { font-size: 18px; display: block; margin-bottom: 4px; }
+        .comp-name { font-size: 26px; font-weight: bold; color: var(--accent); display: block; margin-bottom: 10px; text-align: center; }
+        .comp-detail { font-size: 18px; display: block; margin-bottom: 6px; }
     </style>
 </head>
 <body>
@@ -67,59 +57,117 @@
         <div class="company-footer">
             <span class="comp-name">極亮廣告燈箱</span>
             <span class="comp-detail">電話：04-22370107 | 趙恆毅 0921-159127</span>
+            <span class="comp-detail">地址：台中市北屯區大連路三段127號 | LINE：jiliang</span>
         </div>
     </div>
 
-    <!-- 單型材專頁 -->
+    <!-- 1. 卡布燈箱 -->
+    <div id="kabudengxiang" class="page">
+        <button class="back-btn" onclick="goHome()">回首頁選單</button>
+        <h2 style="text-align:center; color:var(--accent);">工程款卡布燈箱</h2>
+        <label>尺寸 (cm)</label>
+        <div style="display:flex; gap:10px;"><input type="number" id="k_w" placeholder="寬"><input type="number" id="k_h" placeholder="高"></div>
+        <label>框厚度</label><select id="k_frame" onchange="updateKLights()"></select>
+        <label>燈條規格</label><select id="k_light"></select>
+        <label>色溫需求</label><select id="k_kelvin"><option>10000K</option><option selected>6500K</option><option>3000K</option><option value="不需要">不需要</option></select>
+        <label>燈布材質</label><select id="k_fabric"></select>
+        <label>背板材質</label><select id="k_backboard"></select>
+        <label>組裝費</label><select id="k_assemble"><option value="yes">需要組裝</option><option value="no">不需要組裝</option></select>
+        <button onclick="calcKabu()">產生詳細報價</button>
+        <div id="k_result" class="res-box"></div>
+    </div>
+
+    <!-- 2. 拉布燈箱 (規格已更新) -->
+    <div id="labudengxiang" class="page">
+        <button class="back-btn" onclick="goHome()">回首頁選單</button>
+        <h2 style="text-align:center; color:var(--accent);">工程款戶外型拉布燈箱</h2>
+        <label>尺寸 (cm)</label>
+        <div style="display:flex; gap:10px;"><input type="number" id="l_w" placeholder="寬"><input type="number" id="l_h" placeholder="高"></div>
+        <label>框規格</label>
+        <select id="l_frame" onchange="updateLLights()">
+            <option value="5.5">側開蓋-8cm ($5.5)</option>
+            <option value="12">側開蓋-12cm ($12)</option>
+            <option value="9.5">正開蓋-5CM面蓋 ($9.5)</option>
+            <option value="10.5">正開蓋-6.5CM面蓋(側8) ($10.5)</option>
+            <option value="11">正開蓋-6.5CM面蓋(側10) ($11)</option>
+            <option value="12.5">正開蓋-9CM面蓋 ($12.5)</option>
+            <option value="13">正開蓋-6.5CM面蓋(側15) ($13)</option>
+            <option value="0">不需要</option>
+        </select>
+        <label>燈條規格</label><select id="l_light"></select>
+        <label>色溫需求</label><select id="l_kelvin"><option selected>6500K</option><option>3000K</option><option value="不需要">不需要</option></select>
+        <label>燈布材質</label><select id="l_fabric"></select>
+        <label>背板材質</label><select id="l_backboard"></select>
+        <button onclick="calcLabu()">產生詳細報價</button>
+        <div id="l_result" class="res-box"></div>
+    </div>
+
+    <!-- 3. 雙面卡布 -->
+    <div id="double_kabu" class="page">
+        <button class="back-btn" onclick="goHome()">回首頁選單</button>
+        <h2 style="text-align:center; color:var(--accent);">雙面卡布燈箱</h2>
+        <label>尺寸 (cm)</label>
+        <div style="display:flex; gap:10px;"><input type="number" id="d_w" placeholder="寬"><input type="number" id="d_h" placeholder="高"></div>
+        <label>鋁框厚度</label>
+        <select id="d_frame">
+            <option value="5.5">4.5cm</option><option value="6">4.95cm</option><option value="6.5">7.8cm</option>
+            <option value="6.5">8cm</option><option value="7">10cm</option><option value="7.5">12cm</option>
+            <option value="8">15cm</option><option value="8.5">16cm</option><option value="0">不需要</option>
+        </select>
+        <label>燈條規格 (支數計)</label><select id="d_light"><option value="250">室內款 ($250)</option><option value="550">防水款 ($550)</option><option value="0">不需要</option></select>
+        <label>燈布材質 (二面)</label><select id="d_fabric"><option value="100">軟膜燈布</option><option value="140">UV燈布-台</option><option value="0">不需要</option></select>
+        <label>配件選購</label><select id="d_acc"><option value="0">不需要配件</option><option value="1000">帶輪底座 60cm</option><option value="1300">帶輪底座 80cm</option><option value="1500">帶輪底座 100cm</option><option value="1800">帶輪底座 120cm</option><option value="320">吊掛方管 40cm對</option><option value="480">吊掛方管 120cm對</option></select>
+        <button onclick="calcDouble()">產生報價單</button>
+        <div id="d_result" class="res-box"></div>
+    </div>
+
+    <!-- 4. 包柱卡布 (規格已更新) -->
+    <div id="baozhu_kabu" class="page">
+        <button class="back-btn" onclick="goHome()">回首頁選單</button>
+        <h2 style="text-align:center; color:var(--accent);">包柱卡布燈箱</h2>
+        <label>包柱款式</label><select id="b_type" onchange="toggleBInputs()"><option value="L">L型 (2面)</option><option value="U">U型 (3面)</option><option value="O">口型 (4面)</option></select>
+        <div id="b_ws"><input type="number" id="b_w1" placeholder="寬1"><input type="number" id="b_w2" placeholder="寬2"><input type="number" id="b_w3" placeholder="寬3" style="display:none;"><input type="number" id="b_w4" placeholder="寬4" style="display:none;"><input type="number" id="b_h" placeholder="高"></div>
+        <label>框厚度</label>
+        <select id="b_frame" onchange="updateBLights()">
+            <option value="6.5" data-price="4.5">6.5cm</option>
+            <option value="8" data-price="5">8cm</option>
+            <option value="10" data-price="5.5">10cm</option>
+            <option value="12" data-price="6">12cm</option>
+        </select>
+        <label>轉角柱</label><select id="b_pillar"><option value="yes">需要</option><option value="no">不需要</option></select>
+        <label>燈條規格</label><select id="b_light"></select>
+        <label>燈布材質</label><select id="b_fabric"><option value="50">軟膜燈布</option><option value="70">UV燈布</option><option value="0">不需要</option></select>
+        <button onclick="calcBaozhu()">產生報價單</button>
+        <div id="b_result" class="res-box"></div>
+    </div>
+
+    <!-- 5. 單型材系列 (規格已更新) -->
     <div id="material_page" class="page">
         <button class="back-btn" onclick="goHome()">回首頁選單</button>
         <p style="background:#e74c3c; color:white; padding:10px; border-radius:5px; text-align:center; font-weight:bold; font-size:18px;">整支出售，一支 300 公分直角裁切，不裁角度</p>
-        <label>1. 選擇型材類別</label>
-        <select id="m_cat" onchange="updateMItems()">
-            <option value="k">卡布型材系列</option>
-            <option value="l">拉布型材系列</option>
-            <option value="d">雙面型材系列</option>
-            <option value="p">配件/轉角柱</option>
-        </select>
-        <label>2. 選擇規格</label>
-        <select id="m_item"></select>
-        <label>3. 數量 (支/組)</label>
-        <input type="number" id="m_qty" value="1" min="1">
-        <button onclick="addM()" style="background:#27ae60;">加入報價清單</button>
+        <label>1. 選擇類別</label><select id="m_cat" onchange="updateMItems()"><option value="k">卡布型材</option><option value="l">拉布型材</option><option value="d">雙面型材</option><option value="p">配件類</option></select>
+        <label>2. 選擇規格</label><select id="m_item"></select>
+        <label>3. 數量 (支/組)</label><input type="number" id="m_qty" value="1">
+        <button onclick="addM()">加入清單</button>
         <button onclick="clearM()" style="background:#5f6368; margin-top:10px;">清空清單</button>
-        
-        <div id="m_res_area">
-            <div id="m_result" class="res-box">
-                <div class="quote-header">單型材報價單</div>
-                <div id="m_table_container"></div>
-                <div class="total-price" id="m_total">$ 0</div>
-                <div class="company-footer">
-                    <span class="comp-name">極亮廣告燈箱</span>
-                    <span class="comp-detail">電話：04-22370107 | 趙恆毅 0921-159127</span>
-                </div>
-            </div>
-        </div>
+        <div id="m_result" class="res-box"></div>
     </div>
-
-    <!-- 其他頁面 (卡布/拉布/雙面/包柱) 邏輯壘加 -->
-    <div id="kabudengxiang" class="page"><button class="back-btn" onclick="goHome()">回首頁選單</button><label>卡布尺寸</label>...計算邏輯同前...</div>
 </div>
 
 <script>
 const PASSKEY = "22370107";
+const K_DATA = {"4":4,"6":4.5,"6.5":4.5,"7.8":4.5,"8":5,"10":5.5,"12":6};
+const LIGHT_DATA = {"8":{tw_wp:180,sa_wp:120,sa_sp:54}};
 const M_LIST = {
-    k: [
-        {n:"[卡布] 4CM",p:1200},{n:"[卡布] 6CM",p:1350},{n:"[卡布] 6.5CM",p:1350},{n:"[卡布] 8CM",p:1500},{n:"[卡布] 7.8CM(特價)",p:1350}
-    ],
+    k: [{n:"[卡布] 4CM",p:1200},{n:"[卡布] 6CM",p:1350},{n:"[卡布] 6.5CM",p:1350},{n:"[卡布] 8CM",p:1500},{n:"[卡布] 7.8CM(特價)",p:1350}],
     l: [
-        {n:"[拉布] 側開蓋 8CM",p:1650},{n:"[拉布] 側開蓋 12CM",p:1800},{n:"[拉布] 正開蓋 5CM",p:2850},{n:"[拉布] 正開蓋 6.5CM(8面)",p:3150},{n:"[拉布] 正開蓋 6.5CM(10面)",p:3300},{n:"[拉布] 正開蓋 9CM(12面)",p:3750},{n:"[拉布] 正開蓋 6.5CM(15面)",p:3900}
+        {n:"[拉布] 側開蓋 8CM",p:1650},{n:"[拉布] 側開蓋 12CM",p:1800},
+        {n:"[拉布] 正開蓋 5CM面蓋",p:2850},{n:"[拉布] 正開蓋 6.5CM面蓋(側8)",p:3150},
+        {n:"[拉布] 正開蓋 6.5CM面蓋(側10)",p:3300},{n:"[拉布] 正開蓋 9CM面蓋",p:3750},
+        {n:"[拉布] 正開蓋 6.5CM面蓋(側15)",p:3900}
     ],
-    d: [
-        {n:"[雙面] 4.5CM",p:1650},{n:"[雙面] 4.95CM",p:1800},{n:"[雙面] 7.8CM",p:1950},{n:"[雙面] 8CM",p:1950},{n:"[雙面] 10CM",p:2100},{n:"[雙面] 12CM",p:2250},{n:"[雙面] 15CM",p:2400},{n:"[雙面] 16CM",p:2250}
-    ],
-    p: [
-        {n:"轉角柱",p:600},{n:"接板支撐柱",p:600},{n:"角碼(組)",p:80},{n:"連接駁條(組)",p:60}
-    ]
+    d: [{n:"[雙面] 4.5CM",p:1650},{n:"[雙面] 4.95CM",p:1800},{n:"[雙面] 7.8CM",p:1950},{n:"[雙面] 8CM",p:1950},{n:"[雙面] 10CM",p:2100},{n:"[雙面] 12CM",p:2250},{n:"[雙面] 15CM",p:2400},{n:"[雙面] 16CM",p:2250}],
+    p: [{n:"轉角柱",p:600},{n:"接板支撐柱",p:600},{n:"角碼(組)",p:80},{n:"連接駁條(組)",p:60}]
 };
 
 let currentM = [];
@@ -128,46 +176,55 @@ function checkAuth(){ if(document.getElementById('passkey').value===PASSKEY){doc
 function showPage(id){ document.querySelectorAll('.page').forEach(p=>p.style.display='none'); document.getElementById('home-menu').style.display='none'; document.getElementById(id).style.display='block'; window.scrollTo(0,0); if(id==='material_page')updateMItems(); }
 function goHome(){ document.querySelectorAll('.page').forEach(p=>p.style.display='none'); document.getElementById('home-menu').style.display='block'; }
 
-function updateMItems(){
-    const c = document.getElementById('m_cat').value, s = document.getElementById('m_item');
-    s.innerHTML = "";
-    M_LIST[c].forEach((item, i) => s.options.add(new Option(`${item.n} ($${item.p})`, i)));
+window.onload = function(){
+    const kf = document.getElementById('k_frame');
+    Object.keys(K_DATA).forEach(k=>kf.options.add(new Option(k+"cm", K_DATA[k])));
+    kf.options.add(new Option("不需要", 0));
+    document.getElementById('k_fabric').innerHTML = '<option value="50">軟膜燈布</option><option value="70">UV燈布(台)</option><option value="0">不需要</option>';
+    document.getElementById('k_backboard').innerHTML = '<option value="50">塑鋁板</option><option value="40">發泡板</option><option value="0">不需要</option>';
+    updateKLights(); updateLLights(); updateBLights();
+};
+
+function buildL(fid, lid){
+    const l = document.getElementById(lid); const p = LIGHT_DATA["8"];
+    l.innerHTML = `<option value="${p.tw_wp}">防水-台灣晶元</option><option value="${p.sa_wp}">防水-三安</option><option value="${p.sa_sp}">三安特價</option><option value="0">不需要</option>`;
+}
+function updateKLights(){ buildL('k_frame','k_light'); }
+function updateLLights(){ buildL('l_frame','l_light'); }
+function updateBLights(){ buildL('b_frame','b_light'); }
+
+function renderR(rid, title, details, total){
+    const el = document.getElementById(rid);
+    el.innerHTML = `<div class="quote-header">${title}</div>${details}<div class="total-price">$ ${total.toLocaleString()}</div><div class="company-footer"><span class="comp-name">極亮廣告燈箱</span><span class="comp-detail">電話：04-22370107 | 趙恆毅 0921-159127</span><span class="comp-detail">地址：台中市北屯區大連路三段127號 | LINE：jiliang</span></div><div class="btn-group"><button onclick="takeSnap('${rid}')" style="background:#7f8c8d;">產生報價截圖</button></div>`;
+    el.style.display = 'block'; el.scrollIntoView({behavior:'smooth'});
 }
 
-function addM(){
-    const c = document.getElementById('m_cat').value, i = document.getElementById('m_item').value, q = parseInt(document.getElementById('m_qty').value)||1;
-    const item = M_LIST[c][i];
-    currentM.push({n: item.n, q: q, p: item.p, t: item.p*q, cat: c});
-    renderMTable();
+function calcKabu(){
+    const w = parseFloat(document.getElementById('k_w').value)||0, h = parseFloat(document.getElementById('k_h').value)||0, size = (w*h)/900, perim = (w+h)*2;
+    const total = Math.round(perim*parseFloat(document.getElementById('k_frame').value)) + Math.round(size*parseFloat(document.getElementById('k_light').value));
+    renderR('k_result', '工程款卡布燈箱', `<div class="price-item"><span class="price-label">尺寸才數</span><div class="price-content"><span>${w}x${h}cm (${size.toFixed(2)}才)</span></div></div>`, total);
 }
-
-function renderMTable(){
-    let gT = 0;
-    let html = '<table><tr><th>品項規格</th><th>數量</th><th>單價</th><th>小計</th></tr>';
-    currentM.forEach(item => {
-        gT += item.t;
-        let tagClass = item.cat === 'k' ? 'tag-kabu' : (item.cat === 'l' ? 'tag-labu' : (item.cat === 'd' ? 'tag-double' : ''));
-        html += `<tr><td class="${tagClass}" style="text-align:left;">${item.n}</td><td>${item.q}</td><td>${item.p}</td><td>${item.t}</td></tr>`;
-    });
-    html += '</table>';
-    document.getElementById('m_table_container').innerHTML = html;
-    document.getElementById('m_total').innerText = "$ " + gT.toLocaleString();
-    document.getElementById('m_result').style.display = 'block';
-    
-    // 增加截圖按鈕
-    if(!document.getElementById('m_snap_btn')){
-        const btn = document.createElement('button');
-        btn.id = 'm_snap_btn';
-        btn.innerText = '產生報價截圖';
-        btn.style.marginTop = '15px';
-        btn.style.background = '#7f8c8d';
-        btn.onclick = () => takeSnap('m_result');
-        document.getElementById('m_res_area').appendChild(btn);
-    }
+function calcLabu(){
+    const w = parseFloat(document.getElementById('l_w').value)||0, h = parseFloat(document.getElementById('l_h').value)||0, size = (w*h)/900, perim = (w+h)*2;
+    const total = Math.round(perim*parseFloat(document.getElementById('l_frame').value)) + Math.round(size*parseFloat(document.getElementById('l_light').value));
+    renderR('l_result', '工程款戶外型拉布燈箱', `<div class="price-item"><span class="price-label">尺寸才數</span><div class="price-content"><span>${w}x${h}cm (${size.toFixed(2)}才)</span></div></div>`, total);
 }
-
-function clearM(){ currentM = []; document.getElementById('m_result').style.display = 'none'; if(document.getElementById('m_snap_btn')) document.getElementById('m_snap_btn').remove(); }
-function takeSnap(id){ html2canvas(document.getElementById(id),{backgroundColor:'#34495e',scale:2}).then(canvas=>{const l=document.createElement('a');l.download='極亮型材報價.png';l.href=canvas.toDataURL();l.click();}); }
+function calcDouble(){
+    const w = parseFloat(document.getElementById('d_w').value)||0, h = parseFloat(document.getElementById('d_h').value)||0, perim = (w+h)*2;
+    const total = Math.round(perim*parseFloat(document.getElementById('d_frame').value)) + (Math.ceil(perim/50)*parseFloat(document.getElementById('d_light').value));
+    renderR('d_result', '雙面卡布燈箱', '', total);
+}
+function calcBaozhu(){
+    const t = document.getElementById('b_type').value, w1 = parseFloat(document.getElementById('b_w1').value)||0, w2 = parseFloat(document.getElementById('b_w2').value)||0, h = parseFloat(document.getElementById('b_h').value)||0;
+    const totalW = w1+w2; const size = Math.ceil((totalW*h)/900);
+    renderR('b_result', t+'型轉角包柱燈箱', `<div class="price-item"><span class="price-label">規格</span><div class="price-content"><span>展開 ${totalW}cm (${size}才)</span></div></div>`, 0);
+}
+function toggleBInputs(){ const t = document.getElementById('b_type').value; document.getElementById('b_w3').style.display = (t==='U'||t==='O')?'block':'none'; document.getElementById('b_w4').style.display = (t==='O')?'block':'none'; }
+function updateMItems(){ const c = document.getElementById('m_cat').value, s = document.getElementById('m_item'); s.innerHTML = ""; M_LIST[c].forEach((item, i) => s.options.add(new Option(`${item.n} ($${item.p})`, i))); }
+function addM(){ const c = document.getElementById('m_cat').value, i = document.getElementById('m_item').value, q = parseInt(document.getElementById('m_qty').value)||1; const item = M_LIST[c][i]; currentM.push({n: item.n, q: q, p: item.p, t: item.p*q}); renderMTable(); }
+function renderMTable(){ let gT = 0, html = '<table><tr><th>品項</th><th>數量</th><th>單價</th><th>小計</th></tr>'; currentM.forEach(item => { gT += item.t; html += `<tr><td style="text-align:left;">${item.n}</td><td>${item.q}</td><td>${item.p}</td><td>${item.t}</td></tr>`; }); html += '</table>'; renderR('m_result', '單型材報價單', html, gT); }
+function clearM(){ currentM = []; document.getElementById('m_result').style.display = 'none'; }
+function takeSnap(id){ html2canvas(document.getElementById(id),{backgroundColor:'#34495e',scale:2}).then(canvas=>{const l=document.createElement('a');l.download='極亮報價單.png';l.href=canvas.toDataURL();l.click();}); }
 </script>
 </body>
 </html>
